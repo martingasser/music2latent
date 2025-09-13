@@ -106,7 +106,10 @@ def encode_audio_inference(audio_path, trainer, max_waveform_length_encode, max_
             else:
                 audio = torch.unsqueeze(audio, 0)
     audio_channels = audio.shape[0]
+    
     if isinstance(audio, np.ndarray):
+        if torch.device(device).type == 'mps':
+            audio = audio.astype(np.float32)
         audio = torch.from_numpy(audio).to(device)
     else:
         # check if audio tensor is on cpu. if it is, move it to the device
